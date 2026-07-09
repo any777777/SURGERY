@@ -16,14 +16,6 @@ Open `http://localhost:3000`.
 
 The full extracted qbank is generated locally into `data/private/surgery-qbank.json`, with figures in `public/study-assets/private/`. Those files are intentionally ignored by Git so the public repository contains the application, extraction tooling, and demo fallback, not the private study dataset.
 
-## Protection
-
-Set `STUDY_ACCESS_PASSWORD` before deploying to require Basic Auth:
-
-```bash
-STUDY_ACCESS_PASSWORD="choose-a-private-password"
-```
-
 ## Verification
 
 ```bash
