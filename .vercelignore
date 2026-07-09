@@ -1,0 +1,5 @@
+tmp
+reports
+*.pdf
+test-results
+playwright-report
