@@ -546,7 +546,7 @@ function QuestionView({
               {question.figures.map((figure, index) => (
                 <figure key={figure.id} className="overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)]">
                   <Image
-                    src={figure.path}
+                    src={publicPath(figure.path)}
                     alt="Clinical figure"
                     width={Math.max(320, Math.round((figure.width ?? 320) * 2))}
                     height={Math.max(220, Math.round((figure.height ?? 220) * 2))}
