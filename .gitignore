@@ -45,6 +45,7 @@ yarn-error.log*
 !/data/private/.gitkeep
 /public/study-assets/private/*
 !/public/study-assets/private/.gitkeep
+/public/qbank.json
 /reports/*
 !/reports/.gitkeep
 

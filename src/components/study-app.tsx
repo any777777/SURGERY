@@ -26,6 +26,11 @@ type AnswerRecord = {
 };
 
 const STORAGE_KEY = "surgery-qbank-progress-v1";
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
+function publicPath(path: string) {
+  return `${BASE_PATH}${path}`;
+}
 
 function sameAnswers(left: string[], right: string[]) {
   const a = [...left].sort().join(",");
@@ -64,6 +69,61 @@ function optionTone({
   }
 
   return "border-[var(--border)] bg-white text-[var(--muted)]";
+}
+
+export function StudyAppLoader() {
+  const [qbank, setQbank] = useState<StudyQbank | null>(null);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      setFailed(false);
+
+      try {
+        const response = await fetch(publicPath("/qbank.json"), { cache: "force-cache" });
+        if (!response.ok) {
+          throw new Error(`Unable to load qbank: ${response.status}`);
+        }
+
+        const nextQbank = (await response.json()) as StudyQbank;
+        if (!cancelled) {
+          setQbank(nextQbank);
+        }
+      } catch {
+        if (!cancelled) {
+          setFailed(true);
+        }
+      }
+    }
+
+    load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (qbank) {
+    return <StudyApp qbank={qbank} />;
+  }
+
+  return (
+    <main
+      data-testid="study-shell"
+      data-study-ready="false"
+      className="grid min-h-dvh place-items-center bg-[var(--bg)] px-5 text-center text-[var(--ink)]"
+    >
+      <div className="max-w-sm">
+        <BookOpen className="mx-auto h-8 w-8 text-[var(--primary)]" aria-hidden="true" />
+        <h1 className="mt-4 text-xl font-semibold">Surgery Qbank</h1>
+        <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+          {failed ? "Unable to load the study questions. Check the connection and reload." : "Loading study questions..."}
+        </p>
+      </div>
+    </main>
+  );
 }
 
 function ChapterButton({

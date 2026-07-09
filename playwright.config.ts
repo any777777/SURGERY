@@ -11,7 +11,7 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   webServer: {
-    command: "npx next dev -p 3000",
+    command: "npm run dev -- -p 3000",
     url: "http://127.0.0.1:3000",
     reuseExistingServer: true,
     timeout: 120_000,
