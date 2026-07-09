@@ -106,6 +106,21 @@ def compact_text(parts: list[str] | str) -> str:
     return text.strip()
 
 
+def clean_option_text(text: str) -> str:
+    cut_patterns = [
+        r"\s+A\s+A\s+.*Relative Percentages.*$",
+        r"\s+TER\s+\d+.*$",
+        r"\s+rms of use\..*$",
+        r"\s+(?:A\s+B\s+|A\s+)?Figure\s+(?:\d|[A-Z]).*$",
+        r"\s+re\s+\d{1,2}-\d+\..*$",
+        r"\s+e\s+\d{1,2}-\d+\..*$",
+        r"\s+\(Reproduced,\s+with permission.*$",
+    ]
+    for pattern in cut_patterns:
+        text = re.sub(pattern, "", text, flags=re.IGNORECASE)
+    return text.strip()
+
+
 def is_noise_line(raw: str) -> bool:
     line = compact_text(raw)
     if not line:
@@ -171,7 +186,7 @@ def split_options_from_context(text: str) -> tuple[str, list[dict[str, str]]]:
     for idx, match in enumerate(matches):
         end = matches[idx + 1].start() if idx + 1 < len(matches) else len(text)
         value = text[match.end() : end].strip()
-        options.append({"key": match.group(1).upper(), "text": compact_text(value)})
+        options.append({"key": match.group(1).upper(), "text": clean_option_text(compact_text(value))})
     return context, options
 
 
@@ -201,9 +216,9 @@ def parse_questions(lines: list[tuple[int, str]], chapter: ChapterSpec) -> list[
         if not current:
             return
         options = [
-            {"key": item["key"], "text": compact_text(item["parts"])}
+            {"key": item["key"], "text": clean_option_text(compact_text(item["parts"]))}
             for item in current.pop("option_parts")
-            if compact_text(item["parts"])
+            if clean_option_text(compact_text(item["parts"]))
         ]
         group_context = compact_text(current.pop("group_parts", []))
         group_text, shared_options = split_options_from_context(group_context)
