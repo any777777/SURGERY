@@ -633,7 +633,7 @@ function TopicsView({
           ? chapter.questions.filter((question) =>
               `${question.chapterTitle} ${question.number} ${question.stem}`.toLowerCase().includes(normalizedQuery),
             )
-          : chapter.questions.slice(0, 4);
+          : chapter.questions;
 
         if (normalizedQuery && matchingQuestions.length === 0) return null;
 
