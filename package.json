@@ -6,7 +6,7 @@
     "prepare:qbank": "node scripts/prepare_public_qbank.mjs",
     "dev": "npm run prepare:qbank && next dev",
     "build": "npm run prepare:qbank && next build",
-    "start": "node scripts/serve_static.mjs",
+    "start": "next start",
     "lint": "eslint",
     "extract:pdf": "python scripts/extract_surgery_pdf.py",
     "validate:data": "node scripts/validate_qbank.mjs",
