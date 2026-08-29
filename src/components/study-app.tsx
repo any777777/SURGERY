@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
+import { demoQbank } from "@/data/demo-qbank";
 import type { StudyChapter, StudyQbank, StudyQuestion } from "@/lib/types";
 
 type Mode = "practice" | "topics" | "review" | "progress";
@@ -73,14 +74,11 @@ function optionTone({
 
 export function StudyAppLoader() {
   const [qbank, setQbank] = useState<StudyQbank | null>(null);
-  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
 
     async function load() {
-      setFailed(false);
-
       try {
         const response = await fetch(publicPath("/qbank.json"), { cache: "force-cache" });
         if (!response.ok) {
@@ -93,7 +91,7 @@ export function StudyAppLoader() {
         }
       } catch {
         if (!cancelled) {
-          setFailed(true);
+          setQbank(demoQbank);
         }
       }
     }
@@ -118,9 +116,7 @@ export function StudyAppLoader() {
       <div className="max-w-sm">
         <BookOpen className="mx-auto h-8 w-8 text-[var(--primary)]" aria-hidden="true" />
         <h1 className="mt-4 text-xl font-semibold">Surgery Qbank</h1>
-        <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-          {failed ? "Unable to load the study questions. Check the connection and reload." : "Loading study questions..."}
-        </p>
+        <p className="mt-2 text-sm leading-6 text-[var(--muted)]">Loading study questions...</p>
       </div>
     </main>
   );
